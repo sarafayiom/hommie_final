@@ -26,7 +26,9 @@ class SignupStep1Controller extends GetxController {
   void confirmPhoneNumber() async {
     if (!formKey.currentState!.validate()) return;
 
-    final signupData = SignupStep1Model(phoneNumber: phoneNumberController.text);
+    final signupData = SignupStep1Model(
+      phoneNumber: phoneNumberController.text,
+    );
     await _sendOtp(signupData.phoneNumber);
   }
 
@@ -41,7 +43,6 @@ class SignupStep1Controller extends GetxController {
     }
 
     otpSent = int.parse(response['otp_test'].toString());
-
 
     _showOtpDialog(phone);
   }
@@ -92,7 +93,7 @@ class SignupStep1Controller extends GetxController {
 
               final verifyResponse = await signupService.verifyOtp(
                 phone: phone,
-                otp: otpController.text.trim(), 
+                otp: otpController.text.trim(),
               );
 
               isLoading.value = false;
@@ -102,10 +103,15 @@ class SignupStep1Controller extends GetxController {
                 return;
               }
 
+              if (verifyResponse.containsKey('message') && !verifyResponse.containsKey('pending_user_id')) {
+                Get.snackbar('Error', verifyResponse['message']);
+                return;
+              }
+
               pendingUserId = verifyResponse['pending_user_id'];
 
               if (pendingUserId == null) {
-                Get.snackbar('Error', 'Pending User ID missing after verification!');
+                Get.snackbar('Error', 'Verification failed or User ID missing!');
                 return;
               }
 
@@ -114,9 +120,7 @@ class SignupStep1Controller extends GetxController {
 
               Get.to(
                 () => const SignupStep2Screen(),
-                arguments: {
-                  'pendingUserId': pendingUserId!,
-                },
+                arguments: {'pendingUserId': pendingUserId!},
               );
             },
             child: const Text('Verify'),

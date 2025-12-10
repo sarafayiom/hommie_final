@@ -10,7 +10,7 @@ class OtpService extends GetxService {
   }
 
   Future<Map<String, dynamic>> resendResetOtp(String phone) async {
-  return _postOtp(phone, 'sendResetOtp');
+  return _postOtp(phone, 'sendOtpForRegister');
 }
 
   Future<Map<String, dynamic>> _postOtp(String phone, String endpoint) async {

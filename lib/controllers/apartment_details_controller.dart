@@ -1,60 +1,52 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hommie/models/apartment_model.dart';
+import 'package:hommie/services/apartments_service.dart';
 
 class ApartmentDetailsController extends GetxController {
-  late ApartmentModel apartment;
-  final bool isTenant = true;
-  late RxBool isFavorite; 
+  late Rx<ApartmentModel> apartment; 
   final RxBool isLoading = false.obs;
+  RxBool isFavorite = false.obs;
 
   @override
   void onInit() {
     super.onInit();
-    if (Get.arguments != null && Get.arguments is ApartmentModel) {
-      apartment = Get.arguments as ApartmentModel;
-      isFavorite = apartment.isFavorite.obs;
+    final args = Get.arguments;
+    if (args != null && args is ApartmentModel) {
+      apartment = (args as ApartmentModel).obs;
+      fetchApartmentDetails(apartment.value.id); 
     } else {
       Get.back();
       Get.snackbar("Error", "Apartment details not found");
     }
   }
 
-  void toggleFavorite() async {
-    if (isLoading.value) return; 
-    isLoading.value = true;
-    bool newState = !isFavorite.value;
-
+  void fetchApartmentDetails(int apartmentId) async {
     try {
-      await Future.delayed(const Duration(milliseconds: 500));
-      isFavorite.value = newState;
-      apartment.isFavorite = newState;
-
-      Get.snackbar(
-        "Favorites",
-        newState ? "Apartment added to favorites" : "Apartment removed from favorites",
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
-      );
+      isLoading.value = true;
+      
+      final detailsJson = await ApartmentsService.fetchApartmentDetails(apartmentId);
+      apartment.value.updateFromDetailsJson(detailsJson);
+      apartment.refresh(); 
+      isFavorite.value = apartment.value.isFavorite ?? false;
 
     } catch (e) {
-      print("Error updating favorite: $e");
-      Get.snackbar(
-        "Connection Error",
-        "Unable to save favorite status. Please try again later.",
-        backgroundColor: Colors.redAccent,
-        colorText: Colors.white,
-      );
+      Get.snackbar("Error", "Unable to fetch apartment details. $e",
+          backgroundColor: Colors.redAccent, colorText: Colors.white);
     } finally {
       isLoading.value = false;
     }
   }
 
+  void toggleFavorite() {
+    isFavorite.value = !isFavorite.value;
+    Get.snackbar("Favorite", 
+        isFavorite.value ? "${apartment.value.title} added to favorites." : "${apartment.value.title} removed from favorites.",
+        backgroundColor: isFavorite.value ? Colors.orange : Colors.grey, colorText: Colors.white);
+  }
+
   void bookApartment() {
-    if (isTenant) {
-      print("Booking started for ${apartment.title}");
-    } else {
-      Get.snackbar("Access Denied", "Only tenants can book apartments.");
-    }
+    Get.snackbar("Booking", "Booking started for ${apartment.value.title}",
+        backgroundColor: Colors.green, colorText: Colors.white);
   }
 }

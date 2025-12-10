@@ -76,10 +76,6 @@ class SignupStep4Screen extends StatelessWidget {
         backgroundColor: AppColors.primary,
         centerTitle: true,
         elevation: 0,
-        title: const Text(
-          "Step 4",
-          style: TextStyle(color: Colors.white),
-        ),
       ),
 
       body: SafeArea(
@@ -102,7 +98,7 @@ class SignupStep4Screen extends StatelessWidget {
 
                 const SizedBox(height: 25),
                 buildImagePicker(
-                  "Personal Photo",
+                  "Avatar Photo",
                   controller.personalImagePath,
                   () => controller.pickImage(true),
                 ),

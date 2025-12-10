@@ -24,6 +24,7 @@ class Home extends StatelessWidget {
     ];
 
     return Scaffold(
+      appBar: AppBar(backgroundColor: AppColors.primary,title:Text("Hommie",style: TextStyle(color: AppColors.textPrimaryDark,fontSize: 32)) ,centerTitle: true,),
       backgroundColor: AppColors.backgroundLight,
 
       body: PageView(

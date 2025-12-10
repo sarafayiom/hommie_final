@@ -10,6 +10,12 @@ class SignupStep3Screen extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.find<SignupStep3Controller>();
 
+    const labelStyle = TextStyle(
+      fontSize: 16, 
+      fontWeight: FontWeight.w600, 
+      color: AppColors.textPrimaryLight
+    );
+
     final baseInputDecoration = InputDecoration(
       hintStyle: const TextStyle(color: AppColors.textSecondaryLight),
       filled: true,
@@ -47,27 +53,38 @@ class SignupStep3Screen extends StatelessWidget {
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.textPrimaryLight),
                   ),
                   const SizedBox(height: 15),
+                  const Text('First Name', style: labelStyle),
+                  const SizedBox(height: 5),
                   TextFormField(
                     controller: controller.firstNameController,
                     validator: controller.validateName,
                     style: const TextStyle(color: AppColors.textPrimaryLight),
-                    decoration: baseInputDecoration.copyWith(hintText: 'First Name'),
+                    decoration: baseInputDecoration.copyWith(hintText: 'e.g., Ahmad'),
                   ),
+                  
                   const SizedBox(height: 15),
+                  const Text('Last Name', style: labelStyle),
+                  const SizedBox(height: 5),
                   TextFormField(
                     controller: controller.lastNameController,
                     validator: controller.validateName,
                     style: const TextStyle(color: AppColors.textPrimaryLight),
-                    decoration: baseInputDecoration.copyWith(hintText: 'Last Name'),
+                    decoration: baseInputDecoration.copyWith(hintText: 'e.g., Sami'),
                   ),
+                  
                   const SizedBox(height: 15),
+                  const Text('Date of Birth', style: labelStyle),
+                  const SizedBox(height: 5),
                   TextFormField(
                     controller: controller.dobController,
                     validator: controller.validateDate,
                     readOnly: true,
                     onTap: () => controller.selectDateOfBirth(context),
                     style: const TextStyle(color: AppColors.textPrimaryLight),
-                    decoration: baseInputDecoration.copyWith(hintText: 'Date of Birth (YYYY-MM-DD)'),
+                    decoration: baseInputDecoration.copyWith(
+                      hintText: 'YYYY-MM-DD',
+                      suffixIcon: const Icon(Icons.calendar_today, color: AppColors.textSecondaryLight),
+                    ),
                   ),
                   const SizedBox(height: 40),
                   SizedBox(

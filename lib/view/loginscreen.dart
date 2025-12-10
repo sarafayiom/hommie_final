@@ -8,8 +8,7 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final LoginScreenController controller = Get.find<LoginScreenController>();
-    
+    final LoginScreenController controller = Get.put(LoginScreenController(), permanent: true);
     return Scaffold(
       backgroundColor: AppColors.backgroundLight,
       appBar: AppBar(
@@ -37,16 +36,15 @@ class LoginScreen extends StatelessWidget {
                   ),
 
                   const SizedBox(height: 40),
-
                   TextFormField(
-                    controller: controller.userEmailController,
-                    validator: controller.validateEmail,
-                    keyboardType: TextInputType.emailAddress,
+                    controller: controller.userPhoneController, 
+                    validator: controller.validatePhone, 
+                    keyboardType: TextInputType.phone, 
                     style: const TextStyle(color: AppColors.textPrimaryLight),
                     decoration: InputDecoration(
-                      hintText: 'Email address',
+                      hintText: 'Phone Number', 
                       hintStyle: const TextStyle(color: AppColors.textSecondaryLight),
-                      prefixIcon: const Icon(Icons.email_outlined, color: AppColors.textSecondaryLight),
+                      prefixIcon: const Icon(Icons.phone, color: AppColors.textSecondaryLight), 
                       filled: true,
                       fillColor: AppColors.backgroundLight,
                       contentPadding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
@@ -94,7 +92,7 @@ class LoginScreen extends StatelessWidget {
                   SizedBox(
                     width: double.infinity,
                     height: 50,
-                    child:  ElevatedButton(
+                    child: ElevatedButton(
                       onPressed: controller.login,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.primary, 
@@ -102,16 +100,40 @@ class LoginScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(30),
                         ),
                       ),
-                      child: const Text(
-                        'Log In',
-                        style: TextStyle(
-                          fontSize: 18, 
-                          color: AppColors.backgroundLight,
-                        ),
+                      child: Obx(() => 
+                          controller.isLoading.value 
+                          ? const SizedBox(
+                                width: 24,
+                                height: 24,
+                                child: CircularProgressIndicator(
+                                  color: AppColors.backgroundLight,
+                                  strokeWidth: 2,
+                                ),
+                              )
+                          : const Text(
+                                'Log In',
+                                style: TextStyle(
+                                  fontSize: 18, 
+                                  color: AppColors.backgroundLight,
+                                ),
+                              ),
                       ),
                     ),
                   ),
-                  
+                  const SizedBox(height: 10), 
+               Align(
+               alignment: Alignment.center,
+               child: TextButton(
+               onPressed: controller.showResetPhoneDialog,
+               child: const Text(
+                    'Forgot Password?',
+                     style: TextStyle(
+                     color: AppColors.textPrimaryLight,
+                     fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
                   const SizedBox(height: 50),
                 ],
               ),

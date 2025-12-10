@@ -25,14 +25,20 @@ class SignupService extends GetxService {
       );
 
       print('Verify Response: ${response.body}');
-
       if (response.statusCode == 200) {
         return jsonDecode(response.body);
-      } else {
-        return {
-          'error': 'Failed to verify OTP: ${response.statusCode}',
-          'body': response.body,
-        };
+      } 
+      else {
+        try {
+          final errorBody = jsonDecode(response.body);
+          return errorBody; 
+          
+        } catch (e) {
+          return {
+            'error': 'Failed to verify OTP: ${response.statusCode}',
+            'body': response.body,
+          };
+        }
       }
     } catch (e) {
       return {'error': e.toString()};

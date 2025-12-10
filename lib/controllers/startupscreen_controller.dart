@@ -1,20 +1,22 @@
-
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-
+import 'package:hommie/view/home.dart';
+import 'package:hommie/view/welcomescreen.dart';
 class StartupscreenController extends GetxController {
-  Rx waiting = true.obs;
-   final box = GetStorage();
+  
+  final box = GetStorage();
+  RxBool waiting = true.obs;
   @override
   void onInit() {
     super.onInit();
-    Future.delayed(Duration(seconds: 4), () {
-    // waiting.value = false;
-   //  if (box.hasData('access_token')) {
-        Get.offNamed("welcome");
-   //   } else {
-   //     Get.off(() => SignUp());
-    //  }
+    Future.delayed(const Duration(seconds: 4), () {
+      if (box.hasData('access_token')) {
+        Get.offAll(() => Home()); 
+      } else {
+        Get.offAll(() => WelcomeScreen());
+      }
+      
+      waiting.value = false;
     });
   }
-    }
+}

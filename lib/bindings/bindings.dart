@@ -12,8 +12,6 @@ import 'package:hommie/view/home.dart';
 class Binding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut(() => LoginScreenController(),fenix: true);
-   // Get.lazyPut<ApiLogin>(() => ApiLogin(),fenix: true);
    Get.lazyPut(() => SignupStep1Controller(), fenix: true);
    Get.lazyPut(() => SignupStep2Controller(), fenix: true);
    Get.lazyPut(() => SignupStep3Controller(), fenix: true);

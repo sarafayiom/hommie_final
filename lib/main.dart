@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:hommie/bindings/bindings.dart';
+import 'package:hommie/view/apartment_details_screen.dart';
 import 'package:hommie/view/home.dart';
 import 'package:hommie/view/startupscreen.dart';
 import 'package:hommie/view/welcomescreen.dart';
 
-void main() {
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await GetStorage.init();
   runApp(const MyApp());
+
 }
 
 class MyApp extends StatefulWidget {
@@ -19,12 +24,13 @@ class _Myapp extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      initialRoute: 'home',
+      initialRoute: '/',
       initialBinding: Binding(),
       routes: {
         '/': (context) => StartupScreen(),
         "home": (context) => Home(),
         "welcome": (context) => WelcomeScreen(),
+        "/apartment_details": (context) => ApartmentDetailsScreen(),
       },
     );
   }
