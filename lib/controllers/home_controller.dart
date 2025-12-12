@@ -21,20 +21,25 @@ class HomeController extends GetxController {
     pageController.jumpToPage(index);
   }
 
-  void fetchApartments() async {
+  void goToDetails(ApartmentModel apartment) {
+    Get.to(() => const ApartmentDetailsScreen(), arguments: apartment);
+  }
+
+  Future<void> fetchApartments() async {
     try {
-      isLoading.value = true;
-      final fetchedApartments = await ApartmentsService.fetchApartments();
-      apartments.assignAll(fetchedApartments);
+      if (apartments.isEmpty) {
+        isLoading(true);
+      }
+      final result = await ApartmentsService.fetchApartments();
+      apartments.assignAll(result);
     } catch (e) {
-      Get.snackbar("Error", "Unable to fetch apartments. $e",
-          backgroundColor: Colors.redAccent, colorText: Colors.white);
+      print("Error fetching apartments: $e");
     } finally {
-      isLoading.value = false;
+      isLoading(false);
     }
   }
 
   void goToApartmentDetails(ApartmentModel apartment) {
-    Get.to(()=>ApartmentDetailsScreen(), arguments: apartment);
+    Get.to(() => ApartmentDetailsScreen(), arguments: apartment);
   }
 }

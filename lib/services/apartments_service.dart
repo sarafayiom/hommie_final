@@ -7,17 +7,17 @@ class ApartmentsService {
   static const String imageBaseUrl = "http://10.0.2.2:8000/";
 
 static String getCleanImageUrl(String serverImagePath) {
+    if (serverImagePath.isEmpty) {
+        return "";
+    }
+    String pathWithForwardSlashes = serverImagePath.replaceAll('\\', '/');
+    String fileName = pathWithForwardSlashes.split('/').last;
+    String cleanPath = 'storage/apartments/$fileName';
     if (serverImagePath.startsWith('http') || serverImagePath.startsWith('https')) {
-      return serverImagePath; 
+        return imageBaseUrl + cleanPath;
     }
-    serverImagePath = serverImagePath.replaceAll(RegExp(r'^/|public/'), ''); 
-    if (!serverImagePath.contains('/')) {
-        serverImagePath = 'storage/apartments/' + serverImagePath; 
-    } 
-    else if (!serverImagePath.startsWith('storage/')) {
-        serverImagePath = 'storage/' + serverImagePath;
-    }
-    return imageBaseUrl + serverImagePath;
+
+    return imageBaseUrl + cleanPath;
 }
   static Future<List<ApartmentModel>> fetchApartments() async {
     final url = Uri.parse("${baseUrl}apartments");

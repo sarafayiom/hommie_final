@@ -3,12 +3,14 @@ import 'package:get/get.dart';
 import 'package:hommie/controllers/home_controller.dart';
 import 'package:hommie/models/apartment_model.dart';
 import 'package:hommie/utils/app_colors.dart';
+import 'package:hommie/services/apartments_service.dart';
 
 class ApartmentsScreen extends StatelessWidget {
   const ApartmentsScreen({super.key});
 
   Widget _buildApartmentGridItem(ApartmentModel apartment, Function(ApartmentModel) onTap) {
-    final image = apartment.mainImage; 
+    final image = ApartmentsService.getCleanImageUrl(apartment.mainImage);
+    
     return GestureDetector(
       onTap: () => onTap(apartment),
       child: Container(
@@ -75,7 +77,7 @@ class ApartmentsScreen extends StatelessWidget {
                         ),
                       ],
                     ),
-                    const Spacer(),
+                      const SizedBox(height: 10),
                     Align(
                       alignment: Alignment.bottomRight,
                       child: Text(
@@ -100,25 +102,36 @@ class ApartmentsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final HomeController controller = Get.find<HomeController>();
 
-    return Obx(() {
-      if (controller.isLoading.value) {
-        return const Center(child: CircularProgressIndicator(color: AppColors.primary));
-      }
+    return Scaffold(
+      backgroundColor: AppColors.backgroundLight,
+      body: Obx(() {
+        if (controller.isLoading.value) {
+          return const Center(child: CircularProgressIndicator(color: AppColors.primary));
+        }
 
-      return GridView.builder(
-        padding: const EdgeInsets.all(15),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          crossAxisSpacing: 15,
-          mainAxisSpacing: 15,
-          childAspectRatio: 0.75,
-        ),
-        itemCount: controller.apartments.length,
-        itemBuilder: (context, index) {
-          final apartment = controller.apartments[index]; 
-          return _buildApartmentGridItem(apartment, controller.goToApartmentDetails);
-        },
-      );
-    });
+        if (controller.apartments.isEmpty) {
+          return const Center(child: Text('No apartments found.', style: TextStyle(color: AppColors.textSecondaryLight)));
+        }
+
+        return RefreshIndicator(
+          onRefresh: controller.fetchApartments,
+          color: AppColors.primary,
+          child: GridView.builder(
+            padding: const EdgeInsets.all(15),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 15,
+              mainAxisSpacing: 15,
+              childAspectRatio: 0.65,
+            ),
+            itemCount: controller.apartments.length,
+            itemBuilder: (context, index) {
+              final apartment = controller.apartments[index];
+              return _buildApartmentGridItem(apartment, controller.goToDetails);
+            },
+          ),
+        );
+      }),
+    );
   }
 }

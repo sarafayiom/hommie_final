@@ -59,19 +59,14 @@ class LoginScreenController extends GetxController {
 
     try {
       final response = await _authService.loginuser(user);
-
       LoadingHelper.hide();
       isLoading.value = false;
-
       if (response.statusCode == 200 && response.body != null) {
         final data = response.body!;
-
         if (data.token != null) {
           final box = GetStorage();
           box.write('access_token', data.token);
-
           Get.snackbar('Success', 'Logged in successfully');
-
           if (logingFirstTime == true) {
             logingFirstTime = false;
           } else {
@@ -85,11 +80,11 @@ class LoginScreenController extends GetxController {
         }
       } else {
         String errorMessage = "Login failed. Please check your credentials.";
-        if (response.statusCode == 401) {
+        if (response.statusCode == 401 || response.statusCode == 400) {
           errorMessage = "Invalid phone number or password.";
-        } else if (response.statusText != null) {
-          errorMessage = response.statusText!;
-        }
+        } 
+        /*else if (response.statusText != null) {
+          errorMessage = response.statusText!;*/
         Get.snackbar("Error", errorMessage);
       }
     } catch (e) {

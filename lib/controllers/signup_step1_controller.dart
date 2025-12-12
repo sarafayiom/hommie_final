@@ -50,7 +50,7 @@ class SignupStep1Controller extends GetxController {
   void _showOtpDialog(String phone) {
     Get.dialog(
       AlertDialog(
-        title: const Text('Enter OTP'),
+        title: const Text('Enter OTP Sent Via WhatsApp'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -59,7 +59,7 @@ class SignupStep1Controller extends GetxController {
               keyboardType: TextInputType.number,
               maxLength: 6,
               decoration: const InputDecoration(
-                hintText: 'Enter OTP',
+                hintText: 'Enter Code',
                 counterText: '',
               ),
             ),

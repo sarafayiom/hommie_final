@@ -24,7 +24,7 @@ class _Myapp extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      initialRoute: '/',
+      initialRoute: 'welcome',
       initialBinding: Binding(),
       routes: {
         '/': (context) => StartupScreen(),

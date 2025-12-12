@@ -1,5 +1,3 @@
-// lib/view/profile_screen.dart
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hommie/controllers/logout_controller.dart';
