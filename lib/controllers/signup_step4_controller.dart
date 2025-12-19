@@ -1,8 +1,11 @@
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import '../models/signup_step4_model.dart';
 import '../services/signup_step4_service.dart';
 import 'package:hommie/view/home.dart';
+
+import '../view/owner_home_screen.dart';
 
 class SignupStep4Controller extends GetxController {
   late final int pendingUserId;
@@ -10,7 +13,7 @@ class SignupStep4Controller extends GetxController {
   final RxString personalImagePath = ''.obs;
   final RxString nationalIdImagePath = ''.obs;
   final isLoading = false.obs;
-
+  final box = GetStorage();
   final picker = ImagePicker();
   final SignupStep4Service service = SignupStep4Service();
 
@@ -51,10 +54,18 @@ class SignupStep4Controller extends GetxController {
 
     if (result["success"] == true) {
       Get.snackbar("Success", "Images uploaded successfully");
-      finalizeAccount();
-      Get.to(() => Home());
-      return true;
-    } else {
+      final storedRole = box.read('temp_signup_role');
+      print("Finalizing account for role: $storedRole");
+
+      if (storedRole == 'owner') {
+        Get.offAll(() => const OwnerHomeScreen());
+      } else {
+        Get.offAll(() => const Home());
+      }
+    box.remove('temp_signup_role');
+    finalizeAccount();
+    return true;
+  } else {
       Get.snackbar("Error", "Upload failed");
       return false;
     }
@@ -67,8 +78,8 @@ class SignupStep4Controller extends GetxController {
 
     if (result["success"] == true) {
       Get.snackbar("Success", "Account created. Waiting for admin approval.");
-      Get.to(() => Home());
-    } else {
+    }
+     else {
       Get.snackbar("Error", "Failed to finalize account.");
     }
   }

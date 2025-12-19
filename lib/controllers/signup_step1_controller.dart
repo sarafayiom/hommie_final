@@ -38,7 +38,7 @@ class SignupStep1Controller extends GetxController {
     isLoading.value = false;
 
     if (response.containsKey('error')) {
-      Get.snackbar('Error', response['error']);
+      Get.snackbar('Error', 'The phone has already been taken.');
       return;
     }
 

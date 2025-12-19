@@ -9,6 +9,8 @@ import 'package:hommie/view/home.dart';
 import 'package:hommie/utils/app_colors.dart';
 import 'package:hommie/view/welcomescreen.dart';
 
+import '../view/owner_home_screen.dart';
+
 class LoginScreenController extends GetxController {
   final AuthService _authService = Get.put(AuthService());
   var logingFirstTime = false;
@@ -45,9 +47,7 @@ class LoginScreenController extends GetxController {
   }
 
   Future<void> login() async {
-    if (!key.currentState!.validate()) {
-      return;
-    }
+    if (!key.currentState!.validate()) return;
 
     final user = UserLoginModel(
       phone: userPhoneController.text,
@@ -61,36 +61,35 @@ class LoginScreenController extends GetxController {
       final response = await _authService.loginuser(user);
       LoadingHelper.hide();
       isLoading.value = false;
+
       if (response.statusCode == 200 && response.body != null) {
         final data = response.body!;
+
         if (data.token != null) {
           final box = GetStorage();
           box.write('access_token', data.token);
+          box.write('user_role', data.role);
+          print('User Role: ${data.role}');
+          print('User Token: ${data.token}');
           Get.snackbar('Success', 'Logged in successfully');
-          if (logingFirstTime == true) {
-            logingFirstTime = false;
+          if (data.role == 'renter') {
+            Get.offAll(() => Home());
+          } else if (data.role == 'owner') {
+            Get.offAll(() => OwnerHomeScreen());
           } else {
             Get.offAll(() => Home());
           }
+
         } else {
-          Get.snackbar(
-            "Error",
-            "Login failed: No authorization token received.",
-          );
+          Get.snackbar("Error", "Login failed: No authorization token received.");
         }
       } else {
-        String errorMessage = "Login failed. Please check your credentials.";
-        if (response.statusCode == 401 || response.statusCode == 400) {
-          errorMessage = "Invalid phone number or password.";
-        } 
-        /*else if (response.statusText != null) {
-          errorMessage = response.statusText!;*/
-        Get.snackbar("Error", errorMessage);
+        Get.snackbar("Error", "Invalid phone number or password.");
       }
     } catch (e) {
       LoadingHelper.hide();
       isLoading.value = false;
-      Get.snackbar('Error', 'Connection error! Please check your network.');
+      Get.snackbar('Error', 'Connection error!');
     }
   }
 
